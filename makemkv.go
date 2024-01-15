@@ -123,7 +123,7 @@ func (m MkvOptions) toStrings() []string {
 		result = append(result, "--directio="+strconv.FormatBool(*m.Directio))
 	}
 	if m.Minlength != nil {
-		result = append(result, "--minlength"+strconv.Itoa(*m.Minlength))
+		result = append(result, "--minlength="+strconv.Itoa(*m.Minlength))
 	}
 	if m.Noscan {
 		result = append(result, "--noscan")
