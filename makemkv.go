@@ -4,11 +4,18 @@ import (
 	"bufio"
 	"errors"
 	"io/fs"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 )
+
+var logger *log.Logger = log.Default()
+
+func SetLogger(l *log.Logger) {
+	logger = l
+}
 
 type Device interface {
 	Device() string
@@ -136,14 +143,18 @@ func Mkv(device Device, titleId string, destination string, opts MkvOptions) (ch
 	dev := device.Type() + ":" + device.Device()
 	options := append(opts.toStrings(), []string{"mkv", dev, titleId, destination}...)
 	cmd := exec.Command("makemkvcon", options...)
+	logger.Println("command", cmd)
 
 	var scanner bufio.Scanner
 	if out, err := cmd.StdoutPipe(); err != nil {
+		logger.Println("error mapping cmd.StdoutPipe()", cmd)
 		return nil, err
 	} else {
 		scanner = *bufio.NewScanner(out)
 	}
+	logger.Println("starting command")
 	if err := cmd.Start(); err != nil {
+		logger.Println("error starting command", cmd)
 		return nil, err
 	}
 
@@ -178,8 +189,10 @@ func Mkv(device Device, titleId string, destination string, opts MkvOptions) (ch
 				}
 			}
 		}
+		logger.Println("waiting for command")
 		if err := cmd.Wait(); err != nil {
 			// TODO what do I do with this err?
+			logger.Println("err in cmd.Wait()", err)
 		}
 	}()
 	return statuschan, nil
