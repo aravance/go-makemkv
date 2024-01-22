@@ -1,4 +1,4 @@
-package mkv
+package makemkv
 
 import (
 	"bufio"
