@@ -99,7 +99,7 @@ func (j *InfoJob) Run() (*DiscInfo, error) {
 func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 	// since SINFO contains both video and audio, we use these to keep track
 	// of the index offset while parsing, so we can put them in separate slices
-	streamIndices := make([]streamIndex, 0, 5)
+	streamIndices := make(map[int]streamIndex)
 
 	var discInfo DiscInfo
 	for scanner.Scan() {
@@ -117,7 +117,7 @@ func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 
 		case "TCOUNT":
 			size, _ := strconv.Atoi(content)
-			discInfo.Titles = make([]TitleInfo, 0, size)
+			discInfo.Titles = make([]TitleInfo, size, size)
 
 		case "CINFO":
 			attrId, _, value, ok := parseCinfo(content)
@@ -176,59 +176,64 @@ func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 			if !ok {
 				continue
 			}
-			var index streamIndex
-			if len(streamIndices) >= streamId {
-				index = streamIndices[streamId]
-			}
-			switch attrId {
-			case ap_iaType:
+			if attrId == ap_iaType {
 				var i int
-				if value == "Video" {
+				switch value {
+				case "Video":
 					i = len(discInfo.Titles[titleId].VideoStreams)
 					discInfo.Titles[titleId].VideoStreams = append(discInfo.Titles[titleId].VideoStreams, VideoStreamInfo{})
-				} else {
+				case "Audio":
 					i = len(discInfo.Titles[titleId].AudioStreams)
 					discInfo.Titles[titleId].AudioStreams = append(discInfo.Titles[titleId].AudioStreams, AudioStreamInfo{})
 				}
 				streamIndices[streamId] = streamIndex{value, i}
+				continue
+			}
+			var index streamIndex
+			index, _ = streamIndices[streamId]
+			stream := discInfo.Titles[titleId].getStream(index)
+			if stream == nil {
+				continue
+			}
+			switch attrId {
 			case ap_iaName:
-				discInfo.Titles[titleId].getStream(index).SetName(value)
+				stream.SetName(value)
 			case ap_iaLangCode:
-				discInfo.Titles[titleId].getStream(index).SetLangCode(value)
+				stream.SetLangCode(value)
 			case ap_iaLangName:
-				discInfo.Titles[titleId].getStream(index).SetLangName(value)
+				stream.SetLangName(value)
 			case ap_iaCodecId:
-				discInfo.Titles[titleId].getStream(index).SetCodecId(value)
+				stream.SetCodecId(value)
 			case ap_iaCodecShort:
-				discInfo.Titles[titleId].getStream(index).SetCodecShort(value)
+				stream.SetCodecShort(value)
 			case ap_iaCodecLong:
-				discInfo.Titles[titleId].getStream(index).SetCodecLong(value)
+				stream.SetCodecLong(value)
 			case ap_iaBitrate:
-				discInfo.Titles[titleId].getStream(index).SetBitRate(value)
+				stream.SetBitRate(value)
 			case ap_iaAudioChannelsCount:
 				i, _ := strconv.Atoi(value)
-				discInfo.Titles[titleId].getStream(index).SetChannelCount(i)
+				stream.SetChannelCount(i)
 			case ap_iaAudioSampleRate:
 				i, _ := strconv.Atoi(value)
-				discInfo.Titles[titleId].getStream(index).SetSampleRate(i)
+				stream.SetSampleRate(i)
 			case ap_iaAudioSampleSize:
 				i, _ := strconv.Atoi(value)
-				discInfo.Titles[titleId].getStream(index).SetSampleSize(i)
+				stream.SetSampleSize(i)
 			case ap_iaVideoSize:
-				discInfo.Titles[titleId].getStream(index).SetVideoSize(value)
+				stream.SetVideoSize(value)
 			case ap_iaVideoAspectRatio:
-				discInfo.Titles[titleId].getStream(index).SetAspectRatio(value)
+				stream.SetAspectRatio(value)
 			case ap_iaVideoFrameRate:
-				discInfo.Titles[titleId].getStream(index).SetFrameRate(value)
+				stream.SetFrameRate(value)
 			case ap_iaStreamFlags:
 				i, _ := strconv.Atoi(value)
-				discInfo.Titles[titleId].getStream(index).SetStreamFlags(i)
+				stream.SetStreamFlags(i)
 			case ap_iaMetadataLanguageCode:
-				discInfo.Titles[titleId].getStream(index).SetMetadataLangCode(value)
+				stream.SetMetadataLangCode(value)
 			case ap_iaMetadataLanguageName:
-				discInfo.Titles[titleId].getStream(index).SetMetadataLangName(value)
+				stream.SetMetadataLangName(value)
 			case ap_iaOutputConversionType:
-				discInfo.Titles[titleId].getStream(index).SetConversionType(value)
+				stream.SetConversionType(value)
 			}
 		}
 	}
@@ -382,10 +387,13 @@ type streamIndex struct {
 }
 
 func (t *TitleInfo) getStream(index streamIndex) iStreamInfo {
-	if index.t == "Video" {
+	switch index.t {
+	case "Video":
 		return &t.VideoStreams[index.i]
-	} else {
+	case "Audio":
 		return &t.AudioStreams[index.i]
+	default:
+		return nil
 	}
 }
 
