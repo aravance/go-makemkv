@@ -4,18 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"io/fs"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 )
-
-var logger *log.Logger = log.Default()
-
-func SetLogger(l *log.Logger) {
-	logger = l
-}
 
 type Device interface {
 	Device() string
@@ -91,8 +84,8 @@ func (d *DiscDevice) Available() bool {
 }
 
 type RipStatus struct {
-	Channel string
 	Title   string
+	Channel string
 	Current int
 	Total   int
 	Max     int
@@ -103,9 +96,10 @@ type MkvOptions struct {
 	Progress  *string
 	Debug     *string
 	Directio  *bool
-	Cache     *string
+	Cache     *int
 	Minlength *int
 	Noscan    bool
+	Decrypt   bool
 }
 
 func (m MkvOptions) toStrings() []string {
@@ -122,11 +116,17 @@ func (m MkvOptions) toStrings() []string {
 	if m.Directio != nil {
 		result = append(result, "--directio="+strconv.FormatBool(*m.Directio))
 	}
+	if m.Cache != nil {
+		result = append(result, "--cache="+strconv.Itoa(*m.Cache))
+	}
 	if m.Minlength != nil {
 		result = append(result, "--minlength="+strconv.Itoa(*m.Minlength))
 	}
 	if m.Noscan {
 		result = append(result, "--noscan")
+	}
+	if m.Decrypt {
+		result = append(result, "--decrypt")
 	}
 	return result
 }
@@ -139,37 +139,47 @@ func Intopt(i int) *int {
 	return &i
 }
 
-func Mkv(device Device, titleId string, destination string, opts MkvOptions) (chan RipStatus, error) {
-	dev := device.Type() + ":" + device.Device()
-	options := append(opts.toStrings(), []string{"mkv", dev, titleId, destination}...)
+type MkvJob struct {
+	Statuschan  chan RipStatus
+	device      Device
+	titleId     int
+	destination string
+	options     MkvOptions
+}
+
+func (j *MkvJob) title() string {
+	return strconv.Itoa(j.titleId)
+}
+
+func (j MkvJob) Run() error {
+	dev := j.device.Type() + ":" + j.device.Device()
+	options := append(j.options.toStrings(), []string{"mkv", dev, j.title(), j.destination}...)
 	cmd := exec.Command("makemkvcon", options...)
-	logger.Println("command", cmd)
 
 	var scanner bufio.Scanner
 	if out, err := cmd.StdoutPipe(); err != nil {
-		logger.Println("error mapping cmd.StdoutPipe()", cmd)
-		return nil, err
+		return err
 	} else {
 		scanner = *bufio.NewScanner(out)
 	}
-	logger.Println("starting command")
 	if err := cmd.Start(); err != nil {
-		logger.Println("error starting command", cmd)
-		return nil, err
+		return err
 	}
 
-	statuschan := make(chan RipStatus)
-
 	go func() {
-		defer close(statuschan)
 		var title string
 		var channel string
 		var total int
 		var current int
 		var max int
+
 		for scanner.Scan() {
 			line := scanner.Text()
-			prefix, content, _ := strings.Cut(line, ":")
+			prefix, content, found := strings.Cut(line, ":")
+			if !found {
+				continue
+			}
+
 			parts := strings.Split(content, ",")
 			switch prefix {
 			case "PRGT":
@@ -180,20 +190,34 @@ func Mkv(device Device, titleId string, destination string, opts MkvOptions) (ch
 				current, _ = strconv.Atoi(parts[0])
 				total, _ = strconv.Atoi(parts[1])
 				max, _ = strconv.Atoi(parts[2])
-				statuschan <- RipStatus{
-					Title:   title,
-					Channel: channel,
-					Current: current,
-					Total:   total,
-					Max:     max,
+				if j.Statuschan != nil {
+					select {
+					case j.Statuschan <- RipStatus{
+						Title:   title,
+						Channel: channel,
+						Current: current,
+						Total:   total,
+						Max:     max,
+					}:
+					default:
+					}
 				}
 			}
 		}
-		logger.Println("waiting for command")
-		if err := cmd.Wait(); err != nil {
-			// TODO what do I do with this err?
-			logger.Println("err in cmd.Wait()", err)
-		}
 	}()
-	return statuschan, nil
+
+	if err := cmd.Wait(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Mkv(device Device, titleId int, destination string, opts MkvOptions) (MkvJob, error) {
+	return MkvJob{
+		Statuschan:  nil,
+		device:      device,
+		titleId:     titleId,
+		destination: destination,
+		options:     opts,
+	}, nil
 }
