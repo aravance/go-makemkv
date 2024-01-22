@@ -33,8 +33,9 @@ type DiscInfo struct {
 }
 
 type TitleInfo struct {
-	VideoStreams []VideoStreamInfo
-	AudioStreams []AudioStreamInfo
+	VideoStreams    []VideoStreamInfo
+	AudioStreams    []AudioStreamInfo
+	SubtitleStreams []SubtitleStreamInfo
 
 	Name             string
 	ChapterCount     int
@@ -72,6 +73,19 @@ type AudioStreamInfo struct {
 	ChannelCount     int
 	SampleRate       int
 	SampleSize       int
+	StreamFlags      int
+	MetadataLangCode string
+	MetadataLangName string
+	ConversionType   string
+}
+
+type SubtitleStreamInfo struct {
+	Name             string
+	LangCode         string
+	LangName         string
+	CodecId          string
+	CodecShort       string
+	CodecLong        string
 	StreamFlags      int
 	MetadataLangCode string
 	MetadataLangName string
@@ -185,6 +199,9 @@ func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 				case "Audio":
 					i = len(discInfo.Titles[titleId].AudioStreams)
 					discInfo.Titles[titleId].AudioStreams = append(discInfo.Titles[titleId].AudioStreams, AudioStreamInfo{})
+				case "Subtitle":
+					i = len(discInfo.Titles[titleId].SubtitleStreams)
+					discInfo.Titles[titleId].SubtitleStreams = append(discInfo.Titles[titleId].SubtitleStreams, SubtitleStreamInfo{})
 				}
 				streamIndices[streamId] = streamIndex{value, i}
 				continue
@@ -550,5 +567,73 @@ func (a *AudioStreamInfo) SetMetadataLangName(metadataLangName string) {
 }
 
 func (a *AudioStreamInfo) SetConversionType(conversionType string) {
+	a.ConversionType = conversionType
+}
+
+func (a *SubtitleStreamInfo) SetName(name string) {
+	a.Name = name
+}
+
+func (a *SubtitleStreamInfo) SetLangCode(langCode string) {
+	a.LangCode = langCode
+}
+
+func (a *SubtitleStreamInfo) SetLangName(langName string) {
+	a.LangName = langName
+}
+
+func (a *SubtitleStreamInfo) SetCodecId(codecId string) {
+	a.CodecId = codecId
+}
+
+func (a *SubtitleStreamInfo) SetCodecShort(codecShort string) {
+	a.CodecShort = codecShort
+}
+
+func (a *SubtitleStreamInfo) SetCodecLong(codecLong string) {
+	a.CodecLong = codecLong
+}
+
+func (a *SubtitleStreamInfo) SetBitRate(bitRate string) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetChannelCount(channelCount int) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetSampleRate(sampleRate int) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetSampleSize(sampleSize int) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetVideoSize(videoSize string) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetAspectRatio(aspectRatio string) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetFrameRate(frameRate string) {
+	// nop
+}
+
+func (a *SubtitleStreamInfo) SetStreamFlags(streamFlags int) {
+	a.StreamFlags = streamFlags
+}
+
+func (a *SubtitleStreamInfo) SetMetadataLangCode(metadataLangCode string) {
+	a.MetadataLangCode = metadataLangCode
+}
+
+func (a *SubtitleStreamInfo) SetMetadataLangName(metadataLangName string) {
+	a.MetadataLangName = metadataLangName
+}
+
+func (a *SubtitleStreamInfo) SetConversionType(conversionType string) {
 	a.ConversionType = conversionType
 }

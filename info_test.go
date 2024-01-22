@@ -22,6 +22,7 @@ func TestParseDiscInfo(t *testing.T) {
 	assertTitle(t, TitleInfo{
 		VideoStreams:     make([]VideoStreamInfo, 1),
 		AudioStreams:     make([]AudioStreamInfo, 2),
+		SubtitleStreams:  make([]SubtitleStreamInfo, 2),
 		Name:             "TitleName0",
 		ChapterCount:     42,
 		Duration:         1*time.Hour + 32*time.Minute + 31*time.Second,
@@ -35,6 +36,7 @@ func TestParseDiscInfo(t *testing.T) {
 	assertTitle(t, TitleInfo{
 		VideoStreams:     make([]VideoStreamInfo, 1),
 		AudioStreams:     make([]AudioStreamInfo, 1),
+		SubtitleStreams:  make([]SubtitleStreamInfo, 1),
 		Name:             "TitleName1",
 		ChapterCount:     42,
 		Duration:         1*time.Hour + 32*time.Minute + 31*time.Second,
@@ -48,6 +50,7 @@ func TestParseDiscInfo(t *testing.T) {
 	assertTitle(t, TitleInfo{
 		VideoStreams:     make([]VideoStreamInfo, 1),
 		AudioStreams:     make([]AudioStreamInfo, 1),
+		SubtitleStreams:  make([]SubtitleStreamInfo, 0),
 		Name:             "TitleName2",
 		ChapterCount:     42,
 		Duration:         1*time.Hour + 32*time.Minute + 31*time.Second,
