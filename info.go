@@ -15,11 +15,11 @@ type InfoJob struct {
 	options MkvOptions
 }
 
-func Info(device Device, opts MkvOptions) (*InfoJob, error) {
+func Info(device Device, opts MkvOptions) *InfoJob {
 	return &InfoJob{
 		device:  device,
 		options: opts,
-	}, nil
+	}
 }
 
 type DiscInfo struct {

@@ -15,14 +15,14 @@ type MkvJob struct {
 	options     MkvOptions
 }
 
-func Mkv(device Device, titleId int, destination string, opts MkvOptions) (*MkvJob, error) {
+func Mkv(device Device, titleId int, destination string, opts MkvOptions) *MkvJob {
 	return &MkvJob{
 		Statuschan:  nil,
 		device:      device,
 		titleId:     titleId,
 		destination: destination,
 		options:     opts,
-	}, nil
+	}
 }
 
 func (j *MkvJob) title() string {
