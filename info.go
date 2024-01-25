@@ -136,6 +136,9 @@ func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 		case "TCOUNT":
 			size, _ := strconv.Atoi(content)
 			discInfo.Titles = make([]TitleInfo, size, size)
+			for i := 0; i < size; i++ {
+				discInfo.Titles[i].Id = i
+			}
 
 		case "CINFO":
 			attrId, _, value, ok := parseCinfo(content)
@@ -199,13 +202,13 @@ func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 				switch value {
 				case "Video":
 					i = len(discInfo.Titles[titleId].VideoStreams)
-					discInfo.Titles[titleId].VideoStreams = append(discInfo.Titles[titleId].VideoStreams, VideoStreamInfo{})
+					discInfo.Titles[titleId].VideoStreams = append(discInfo.Titles[titleId].VideoStreams, VideoStreamInfo{Id: streamId})
 				case "Audio":
 					i = len(discInfo.Titles[titleId].AudioStreams)
-					discInfo.Titles[titleId].AudioStreams = append(discInfo.Titles[titleId].AudioStreams, AudioStreamInfo{})
+					discInfo.Titles[titleId].AudioStreams = append(discInfo.Titles[titleId].AudioStreams, AudioStreamInfo{Id: streamId})
 				case "Subtitle":
 					i = len(discInfo.Titles[titleId].SubtitleStreams)
-					discInfo.Titles[titleId].SubtitleStreams = append(discInfo.Titles[titleId].SubtitleStreams, SubtitleStreamInfo{})
+					discInfo.Titles[titleId].SubtitleStreams = append(discInfo.Titles[titleId].SubtitleStreams, SubtitleStreamInfo{Id: streamId})
 				}
 				streamIndices[streamId] = streamIndex{value, i}
 				continue
