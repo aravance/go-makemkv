@@ -10,7 +10,7 @@ import (
 type MkvJob struct {
 	Statuschan  chan Status
 	device      Device
-	titleId     int
+	titleId     string
 	destination string
 	options     MkvOptions
 }
@@ -19,19 +19,25 @@ func Mkv(device Device, titleId int, destination string, opts MkvOptions) *MkvJo
 	return &MkvJob{
 		Statuschan:  nil,
 		device:      device,
-		titleId:     titleId,
+		titleId:     strconv.Itoa(titleId),
 		destination: destination,
 		options:     opts,
 	}
 }
 
-func (j *MkvJob) title() string {
-	return strconv.Itoa(j.titleId)
+func MkvAll(device Device, titleId int, destination string, opts MkvOptions) *MkvJob {
+	return &MkvJob{
+		Statuschan:  nil,
+		device:      device,
+		titleId:     "all",
+		destination: destination,
+		options:     opts,
+	}
 }
 
 func (j *MkvJob) Run() error {
 	dev := j.device.Type() + ":" + j.device.Device()
-	options := append(j.options.toStrings(), []string{"mkv", dev, j.title(), j.destination}...)
+	options := append(j.options.toStrings(), []string{"mkv", dev, j.titleId, j.destination}...)
 	cmd := exec.Command("makemkvcon", options...)
 
 	var scanner bufio.Scanner

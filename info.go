@@ -37,6 +37,7 @@ type TitleInfo struct {
 	AudioStreams    []AudioStreamInfo
 	SubtitleStreams []SubtitleStreamInfo
 
+	Id               int
 	Name             string
 	ChapterCount     int
 	Duration         time.Duration
@@ -49,6 +50,7 @@ type TitleInfo struct {
 }
 
 type VideoStreamInfo struct {
+	Id               int
 	Name             string
 	CodecId          string
 	CodecShort       string
@@ -63,6 +65,7 @@ type VideoStreamInfo struct {
 }
 
 type AudioStreamInfo struct {
+	Id               int
 	Name             string
 	LangCode         string
 	LangName         string
@@ -80,6 +83,7 @@ type AudioStreamInfo struct {
 }
 
 type SubtitleStreamInfo struct {
+	Id               int
 	Name             string
 	LangCode         string
 	LangName         string
@@ -409,12 +413,15 @@ func (t *TitleInfo) getStream(index streamIndex) iStreamInfo {
 		return &t.VideoStreams[index.i]
 	case "Audio":
 		return &t.AudioStreams[index.i]
+	case "Subtitle":
+		return &t.SubtitleStreams[index.i]
 	default:
 		return nil
 	}
 }
 
 type iStreamInfo interface {
+	SetId(int)
 	SetName(string)
 	SetLangCode(string)
 	SetLangName(string)
@@ -432,6 +439,10 @@ type iStreamInfo interface {
 	SetMetadataLangCode(string)
 	SetMetadataLangName(string)
 	SetConversionType(string)
+}
+
+func (v *VideoStreamInfo) SetId(id int) {
+	v.Id = id
 }
 
 func (v *VideoStreamInfo) SetName(name string) {
@@ -502,6 +513,10 @@ func (v *VideoStreamInfo) SetConversionType(conversionType string) {
 	v.ConversionType = conversionType
 }
 
+func (a *AudioStreamInfo) SetId(id int) {
+	a.Id = id
+}
+
 func (a *AudioStreamInfo) SetName(name string) {
 	a.Name = name
 }
@@ -568,6 +583,10 @@ func (a *AudioStreamInfo) SetMetadataLangName(metadataLangName string) {
 
 func (a *AudioStreamInfo) SetConversionType(conversionType string) {
 	a.ConversionType = conversionType
+}
+
+func (s *SubtitleStreamInfo) SetId(id int) {
+	s.Id = id
 }
 
 func (a *SubtitleStreamInfo) SetName(name string) {
