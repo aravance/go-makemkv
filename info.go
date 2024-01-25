@@ -218,43 +218,43 @@ func parseDiscInfo(scanner *bufio.Scanner) (DiscInfo, error) {
 			}
 			switch attrId {
 			case ap_iaName:
-				stream.SetName(value)
+				stream.setName(value)
 			case ap_iaLangCode:
-				stream.SetLangCode(value)
+				stream.setLangCode(value)
 			case ap_iaLangName:
-				stream.SetLangName(value)
+				stream.setLangName(value)
 			case ap_iaCodecId:
-				stream.SetCodecId(value)
+				stream.setCodecId(value)
 			case ap_iaCodecShort:
-				stream.SetCodecShort(value)
+				stream.setCodecShort(value)
 			case ap_iaCodecLong:
-				stream.SetCodecLong(value)
+				stream.setCodecLong(value)
 			case ap_iaBitrate:
-				stream.SetBitRate(value)
+				stream.setBitRate(value)
 			case ap_iaAudioChannelsCount:
 				i, _ := strconv.Atoi(value)
-				stream.SetChannelCount(i)
+				stream.setChannelCount(i)
 			case ap_iaAudioSampleRate:
 				i, _ := strconv.Atoi(value)
-				stream.SetSampleRate(i)
+				stream.setSampleRate(i)
 			case ap_iaAudioSampleSize:
 				i, _ := strconv.Atoi(value)
-				stream.SetSampleSize(i)
+				stream.setSampleSize(i)
 			case ap_iaVideoSize:
-				stream.SetVideoSize(value)
+				stream.setVideoSize(value)
 			case ap_iaVideoAspectRatio:
-				stream.SetAspectRatio(value)
+				stream.setAspectRatio(value)
 			case ap_iaVideoFrameRate:
-				stream.SetFrameRate(value)
+				stream.setFrameRate(value)
 			case ap_iaStreamFlags:
 				i, _ := strconv.Atoi(value)
-				stream.SetStreamFlags(i)
+				stream.setStreamFlags(i)
 			case ap_iaMetadataLanguageCode:
-				stream.SetMetadataLangCode(value)
+				stream.setMetadataLangCode(value)
 			case ap_iaMetadataLanguageName:
-				stream.SetMetadataLangName(value)
+				stream.setMetadataLangName(value)
 			case ap_iaOutputConversionType:
-				stream.SetConversionType(value)
+				stream.setConversionType(value)
 			}
 		}
 	}
@@ -421,238 +421,238 @@ func (t *TitleInfo) getStream(index streamIndex) iStreamInfo {
 }
 
 type iStreamInfo interface {
-	SetId(int)
-	SetName(string)
-	SetLangCode(string)
-	SetLangName(string)
-	SetCodecId(string)
-	SetCodecShort(string)
-	SetCodecLong(string)
-	SetBitRate(string)
-	SetChannelCount(int)
-	SetSampleRate(int)
-	SetSampleSize(int)
-	SetVideoSize(string)
-	SetAspectRatio(string)
-	SetFrameRate(string)
-	SetStreamFlags(int)
-	SetMetadataLangCode(string)
-	SetMetadataLangName(string)
-	SetConversionType(string)
+	setId(int)
+	setName(string)
+	setLangCode(string)
+	setLangName(string)
+	setCodecId(string)
+	setCodecShort(string)
+	setCodecLong(string)
+	setBitRate(string)
+	setChannelCount(int)
+	setSampleRate(int)
+	setSampleSize(int)
+	setVideoSize(string)
+	setAspectRatio(string)
+	setFrameRate(string)
+	setStreamFlags(int)
+	setMetadataLangCode(string)
+	setMetadataLangName(string)
+	setConversionType(string)
 }
 
-func (v *VideoStreamInfo) SetId(id int) {
+func (v *VideoStreamInfo) setId(id int) {
 	v.Id = id
 }
 
-func (v *VideoStreamInfo) SetName(name string) {
+func (v *VideoStreamInfo) setName(name string) {
 	v.Name = name
 }
 
-func (v *VideoStreamInfo) SetLangCode(langCode string) {
+func (v *VideoStreamInfo) setLangCode(langCode string) {
 	// nop
 }
 
-func (v *VideoStreamInfo) SetLangName(langName string) {
+func (v *VideoStreamInfo) setLangName(langName string) {
 	// nop
 }
 
-func (v *VideoStreamInfo) SetCodecId(codecId string) {
+func (v *VideoStreamInfo) setCodecId(codecId string) {
 	v.CodecId = codecId
 }
 
-func (v *VideoStreamInfo) SetCodecShort(codecShort string) {
+func (v *VideoStreamInfo) setCodecShort(codecShort string) {
 	v.CodecShort = codecShort
 }
 
-func (v *VideoStreamInfo) SetCodecLong(codecLong string) {
+func (v *VideoStreamInfo) setCodecLong(codecLong string) {
 	v.CodecLong = codecLong
 }
 
-func (v *VideoStreamInfo) SetBitRate(bitRate string) {
+func (v *VideoStreamInfo) setBitRate(bitRate string) {
 	// nop
 }
 
-func (v *VideoStreamInfo) SetChannelCount(channelCount int) {
+func (v *VideoStreamInfo) setChannelCount(channelCount int) {
 	// nop
 }
 
-func (v *VideoStreamInfo) SetSampleRate(sampleRate int) {
+func (v *VideoStreamInfo) setSampleRate(sampleRate int) {
 	// nop
 }
 
-func (v *VideoStreamInfo) SetSampleSize(sampleSize int) {
+func (v *VideoStreamInfo) setSampleSize(sampleSize int) {
 	// nop
 }
 
-func (v *VideoStreamInfo) SetVideoSize(videoSize string) {
+func (v *VideoStreamInfo) setVideoSize(videoSize string) {
 	v.VideoSize = videoSize
 }
 
-func (v *VideoStreamInfo) SetAspectRatio(aspectRatio string) {
+func (v *VideoStreamInfo) setAspectRatio(aspectRatio string) {
 	v.AspectRatio = aspectRatio
 }
 
-func (v *VideoStreamInfo) SetFrameRate(frameRate string) {
+func (v *VideoStreamInfo) setFrameRate(frameRate string) {
 	v.FrameRate = frameRate
 }
 
-func (v *VideoStreamInfo) SetStreamFlags(streamFlags int) {
+func (v *VideoStreamInfo) setStreamFlags(streamFlags int) {
 	v.StreamFlags = streamFlags
 }
 
-func (v *VideoStreamInfo) SetMetadataLangCode(metadataLangCode string) {
+func (v *VideoStreamInfo) setMetadataLangCode(metadataLangCode string) {
 	v.MetadataLangCode = metadataLangCode
 }
 
-func (v *VideoStreamInfo) SetMetadataLangName(metadataLangName string) {
+func (v *VideoStreamInfo) setMetadataLangName(metadataLangName string) {
 	v.MetadataLangName = metadataLangName
 }
 
-func (v *VideoStreamInfo) SetConversionType(conversionType string) {
+func (v *VideoStreamInfo) setConversionType(conversionType string) {
 	v.ConversionType = conversionType
 }
 
-func (a *AudioStreamInfo) SetId(id int) {
+func (a *AudioStreamInfo) setId(id int) {
 	a.Id = id
 }
 
-func (a *AudioStreamInfo) SetName(name string) {
+func (a *AudioStreamInfo) setName(name string) {
 	a.Name = name
 }
 
-func (a *AudioStreamInfo) SetLangCode(langCode string) {
+func (a *AudioStreamInfo) setLangCode(langCode string) {
 	a.LangCode = langCode
 }
 
-func (a *AudioStreamInfo) SetLangName(langName string) {
+func (a *AudioStreamInfo) setLangName(langName string) {
 	a.LangName = langName
 }
 
-func (a *AudioStreamInfo) SetCodecId(codecId string) {
+func (a *AudioStreamInfo) setCodecId(codecId string) {
 	a.CodecId = codecId
 }
 
-func (a *AudioStreamInfo) SetCodecShort(codecShort string) {
+func (a *AudioStreamInfo) setCodecShort(codecShort string) {
 	a.CodecShort = codecShort
 }
 
-func (a *AudioStreamInfo) SetCodecLong(codecLong string) {
+func (a *AudioStreamInfo) setCodecLong(codecLong string) {
 	a.CodecLong = codecLong
 }
 
-func (a *AudioStreamInfo) SetBitRate(bitRate string) {
+func (a *AudioStreamInfo) setBitRate(bitRate string) {
 	a.BitRate = bitRate
 }
 
-func (a *AudioStreamInfo) SetChannelCount(channelCount int) {
+func (a *AudioStreamInfo) setChannelCount(channelCount int) {
 	a.ChannelCount = channelCount
 }
 
-func (a *AudioStreamInfo) SetSampleRate(sampleRate int) {
+func (a *AudioStreamInfo) setSampleRate(sampleRate int) {
 	a.SampleRate = sampleRate
 }
 
-func (a *AudioStreamInfo) SetSampleSize(sampleSize int) {
+func (a *AudioStreamInfo) setSampleSize(sampleSize int) {
 	a.SampleSize = sampleSize
 }
 
-func (a *AudioStreamInfo) SetVideoSize(videoSize string) {
+func (a *AudioStreamInfo) setVideoSize(videoSize string) {
 	// nop
 }
 
-func (a *AudioStreamInfo) SetAspectRatio(aspectRatio string) {
+func (a *AudioStreamInfo) setAspectRatio(aspectRatio string) {
 	// nop
 }
 
-func (a *AudioStreamInfo) SetFrameRate(frameRate string) {
+func (a *AudioStreamInfo) setFrameRate(frameRate string) {
 	// nop
 }
 
-func (a *AudioStreamInfo) SetStreamFlags(streamFlags int) {
+func (a *AudioStreamInfo) setStreamFlags(streamFlags int) {
 	a.StreamFlags = streamFlags
 }
 
-func (a *AudioStreamInfo) SetMetadataLangCode(metadataLangCode string) {
+func (a *AudioStreamInfo) setMetadataLangCode(metadataLangCode string) {
 	a.MetadataLangCode = metadataLangCode
 }
 
-func (a *AudioStreamInfo) SetMetadataLangName(metadataLangName string) {
+func (a *AudioStreamInfo) setMetadataLangName(metadataLangName string) {
 	a.MetadataLangName = metadataLangName
 }
 
-func (a *AudioStreamInfo) SetConversionType(conversionType string) {
+func (a *AudioStreamInfo) setConversionType(conversionType string) {
 	a.ConversionType = conversionType
 }
 
-func (s *SubtitleStreamInfo) SetId(id int) {
+func (s *SubtitleStreamInfo) setId(id int) {
 	s.Id = id
 }
 
-func (a *SubtitleStreamInfo) SetName(name string) {
+func (a *SubtitleStreamInfo) setName(name string) {
 	a.Name = name
 }
 
-func (a *SubtitleStreamInfo) SetLangCode(langCode string) {
+func (a *SubtitleStreamInfo) setLangCode(langCode string) {
 	a.LangCode = langCode
 }
 
-func (a *SubtitleStreamInfo) SetLangName(langName string) {
+func (a *SubtitleStreamInfo) setLangName(langName string) {
 	a.LangName = langName
 }
 
-func (a *SubtitleStreamInfo) SetCodecId(codecId string) {
+func (a *SubtitleStreamInfo) setCodecId(codecId string) {
 	a.CodecId = codecId
 }
 
-func (a *SubtitleStreamInfo) SetCodecShort(codecShort string) {
+func (a *SubtitleStreamInfo) setCodecShort(codecShort string) {
 	a.CodecShort = codecShort
 }
 
-func (a *SubtitleStreamInfo) SetCodecLong(codecLong string) {
+func (a *SubtitleStreamInfo) setCodecLong(codecLong string) {
 	a.CodecLong = codecLong
 }
 
-func (a *SubtitleStreamInfo) SetBitRate(bitRate string) {
+func (a *SubtitleStreamInfo) setBitRate(bitRate string) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetChannelCount(channelCount int) {
+func (a *SubtitleStreamInfo) setChannelCount(channelCount int) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetSampleRate(sampleRate int) {
+func (a *SubtitleStreamInfo) setSampleRate(sampleRate int) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetSampleSize(sampleSize int) {
+func (a *SubtitleStreamInfo) setSampleSize(sampleSize int) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetVideoSize(videoSize string) {
+func (a *SubtitleStreamInfo) setVideoSize(videoSize string) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetAspectRatio(aspectRatio string) {
+func (a *SubtitleStreamInfo) setAspectRatio(aspectRatio string) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetFrameRate(frameRate string) {
+func (a *SubtitleStreamInfo) setFrameRate(frameRate string) {
 	// nop
 }
 
-func (a *SubtitleStreamInfo) SetStreamFlags(streamFlags int) {
+func (a *SubtitleStreamInfo) setStreamFlags(streamFlags int) {
 	a.StreamFlags = streamFlags
 }
 
-func (a *SubtitleStreamInfo) SetMetadataLangCode(metadataLangCode string) {
+func (a *SubtitleStreamInfo) setMetadataLangCode(metadataLangCode string) {
 	a.MetadataLangCode = metadataLangCode
 }
 
-func (a *SubtitleStreamInfo) SetMetadataLangName(metadataLangName string) {
+func (a *SubtitleStreamInfo) setMetadataLangName(metadataLangName string) {
 	a.MetadataLangName = metadataLangName
 }
 
-func (a *SubtitleStreamInfo) SetConversionType(conversionType string) {
+func (a *SubtitleStreamInfo) setConversionType(conversionType string) {
 	a.ConversionType = conversionType
 }
